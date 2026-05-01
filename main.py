@@ -3,13 +3,13 @@ import os
 from flask import Flask
 import threading
 
-TOKEN='8434129325:AAFGdaOG2KvwHrQ7LoyHaKZRBZZUNSnG41Y''
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.reply_to(message, "🦍 انا شغال 24/7 يا CEO من السحابة ☁️")
+    bot.reply_to(message, "🦍 24/7 شغال انا يا CEO من السحابة ☁️")
 
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
