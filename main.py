@@ -28,7 +28,7 @@ def check_sub(user_id):
 def get_country(user_id): return USER_COUNTRY.get(user_id, 'EG')
 
 def get_price(coin):
-    try: return requests.get(f'https://api.coingecko.com/api/v3/simple/price?ids={coin}&vs_currencies=usd', timeout=5).json()[coin]['usd']
+    try: return requests.get(f'https://api.coingecko.com/api/v3/simple/price?ids={coin}&vs_currencies=usd', timeout=5).json()['usd']
     except: return 0
 
 def main_keyboard():
@@ -75,7 +75,6 @@ def activate(message):
             bot.reply_to(message, "✅ اشتركت يا وحش\nكل الازرار اتفتحت 💚", reply_markup=main_keyboard())
     except: bot.reply_to(message, "اكتب: /activate CODE")
 
-# ========== 30 زرار كاملين ==========
 @bot.message_handler(func=lambda m: 'كريبتو لايف' in m.text)
 def btn1(message):
     if not check_sub(message.from_user.id): return start(message)
@@ -133,137 +132,4 @@ def btn10(message):
 def btn11(message):
     c = get_country(message.from_user.id)
     times = {'EG':'4:45ص 12:05م 3:30م 6:00م 7:20م','SA':'4:15ص 11:50ص 3:15م 5:45م 7:15م','AE':'4:30ص 12:00م 3:25م 5:55م 7:25م','US':'5:30ص 1:00م 4:30م 7:00م 8:30م'}
-    bot.reply_to(message, f"🕌 صلاة {c}:\nالفجر-الظهر-العصر-المغرب-العشاء\n{times.get(c, times['EG'])}")
-
-@bot.message_handler(func=lambda m: 'اذكار' in m.text)
-def btn12(message):
-    bot.reply_to(message, random.choice(["🤲 سبحان الله وبحمده","🤲 لا اله الا الله","🤲 استغفر الله العظيم","🤲 اللهم صل على محمد"]))
-
-@bot.message_handler(func=lambda m: 'قرآن كريم' in m.text)
-def btn13(message):
-    bot.reply_to(message, random.choice(["﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ﴾","﴿وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا﴾","﴿إِنَّ مَعَ الْعُسْرِ يُسْرًا﴾"]))
-
-@bot.message_handler(func=lambda m: 'اتجاه قبلة' in m.text)
-def btn14(message):
-    bot.reply_to(message, "🕋 القبلة من موقعك:\n\n136° جنوب شرق\n\nافتح البوصلة وجه 136°")
-
-@bot.message_handler(func=lambda m: 'حاسبة زكاة' in m.text)
-def btn15(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "💰 اكتب: زكاة 100000\n\nبحسبلك 2.5% = 2,500")
-
-@bot.message_handler(func=lambda m: 'مسابقة' in m.text)
-def btn16(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, f"🎯 سؤال:\n\n{random.choice(['عاصمة السعودية؟','5×6=?','اول كريبتو؟'])}\n\nجاوب صح تكسب يوم هدية 🎁")
-
-@bot.message_handler(func=lambda m: 'نكتة' in m.text)
-def btn17(message):
-    bot.reply_to(message, random.choice(["واحد اشترى بتكوين نسي الباسورد 😂","دولار راح يتجوز يورو ابوها رفض 😂","محشش: البلوك تشين بلوك اسمنتي؟ 😂"]))
-
-@bot.message_handler(func=lambda m: 'ترجمة' in m.text)
-def btn18(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "🔤 اكتب: ترجم بحب البتكوين\n\nهرد: I love Bitcoin\n\n100 لغة مدعومة")
-
-@bot.message_handler(func=lambda m: 'اسعار موبايلات' in m.text)
-def btn19(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "📱 اسعار عالمية:\n\niPhone 16 Pro: 999$\nS24 Ultra: 899$\nXiaomi 14: 699$")
-
-@bot.message_handler(func=lambda m: 'بنزين' in m.text)
-def btn20(message):
-    if not check_sub(message.from_user.id): return start(message)
-    c = get_country(message.from_user.id)
-    bot.reply_to(message, f"⛽ بنزين {c}:\n\n95: 13.75\n92: 12.50\n80: 11.00\n*اسعار مصر تقريبية*")
-
-@bot.message_handler(func=lambda m: 'ماتشات' in m.text)
-def btn21(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "⚽ اليوم:\n\nالاهلي 2-1 الزمالك ✅\nليفربول 3-0 السيتي\nبرشلونة 1-1 الريال")
-
-@bot.message_handler(func=lambda m: 'وصفات اكل' in m.text)
-def btn22(message):
-    bot.reply_to(message, random.choice(["🍝 مكرونة 10 دقايق: اسلق+صلصة+جبنة","🍳 بيض بسطرمة: حمر+بيض+عيش","🥗 سلطة تونة: تونة+خيار+ليمون"]))
-
-@bot.message_handler(func=lambda m: 'توليد صور' in m.text)
-def btn23(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "🎨 اكتب: ارسم قطة بتكوين\n\n*قريب AI صور حقيقي*\n🐱₿")
-
-@bot.message_handler(func=lambda m: 'توصيات VIP' in m.text)
-def btn24(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "💎 توصية اليوم VIP:\n\n🟢 شراء BTC 64,500$\nهدف: 68,000$\nوقف: 62,000$\n\n*مش نصيحة مالية*")
-
-@bot.message_handler(func=lambda m: 'تغيير دولتي' in m.text)
-def btn25(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "🌍 اكتب دولتك:\n\ndولتي مصر\nدولتي السعودية\nدولتي الامارات\nدولتي امريكا\n\n50 دولة مدعومة")
-
-@bot.message_handler(func=lambda m: 'دولتي' in m.text)
-def set_country(message):
-    if not check_sub(message.from_user.id): return start(message)
-    for name, code in COUNTRIES.items():
-        if name in message.text:
-            USER_COUNTRY[message.from_user.id] = code
-            bot.reply_to(message, f"✅ غيرت دولتك لـ {name}\nكل حاجة هتظهر بعملتك 💚", reply_markup=main_keyboard())
-            return
-    bot.reply_to(message, "❌ دولة مش مدعومة")
-
-@bot.message_handler(func=lambda m: 'عملتي المحلية' in m.text)
-def btn26(message):
-    if not check_sub(message.from_user.id): return start(message)
-    c = get_country(message.from_user.id)
-    curr = CURRENCIES.get(c, 'USD')
-    r = requests.get('https://api.exchangerate-api.com/v4/latest/USD',timeout=5).json()
-    rate = r['rates']
-    bot.reply_to(message, f"💵 عملتك: {curr}\n\n1$ = {rate:,.2f} {curr}\n1 BTC = {rate * 65000:,.0f} {curr}")
-
-@bot.message_handler(func=lambda m: 'دعم فني' in m.text)
-def btn27(message):
-    bot.reply_to(message, "📞 دعم Siaf:\n\nتليجرام: @siaf\nواتساب: 01050149684\n\nرد خلال 5 دقايق 💚")
-
-@bot.message_handler(func=lambda m: 'المساعدة' in m.text)
-def btn28(message):
-    bot.reply_to(message, "ℹ️ ازاي تستخدم البوت:\n\n1. دوس اي زرار من الـ 30\n2. لو تحويل اكتب: 100 دولار كم جنيه\n3. لو دولة اكتب: دولتي السعودية\n\nالاشتراك 50ج: @siaf")
-
-@bot.message_handler(func=lambda m: 'اشتراكي' in m.text)
-def btn29(message):
-    if str(message.from_user.id) == ADMIN_ID:
-        bot.reply_to(message, "👑 انت الادمن يا CEO\nاشتراك مدى الحياة ✅")
-    elif check_sub(message.from_user.id):
-        expire = datetime.fromtimestamp(SUBSCRIBERS[message.from_user.id])
-        bot.reply_to(message, f"✅ اشتراكك شغال\nينتهي: {expire.strftime('%Y-%m-%d')}\nدولتك: {get_country(message.from_user.id)}")
-    else:
-        bot.reply_to(message, "❌ مش مشترك\nاشترك 50ج: @siaf")
-
-@bot.message_handler(func=lambda m: 'جروب VIP' in m.text)
-def btn30(message):
-    if not check_sub(message.from_user.id): return start(message)
-    bot.reply_to(message, "🎁 جروب VIP:\n\nhttps://t.me/+xxxxx\n\n*للمشتركين فقط*\nتوصيات + نقاش + هدايا")
-
-# ========== التحويل الذكي ==========
-@bot.message_handler(func=lambda m: 'كم' in m.text and any(c.isdigit() for c in m.text))
-def convert(message):
-    if not check_sub(message.from_user.id): return start(message)
-    try:
-        amount = re.findall(r'\d+\.?\d*', message.text)[0]
-        curr_map = {'دولار':'USD','يورو':'EUR','جنيه':'EGP','ريال':'SAR','درهم':'AED','دينار':'KWD','ليرة':'TRY','استرليني':'GBP','ين':'JPY','يوان':'CNY','روبل':'RUB'}
-        found = [code for name,code in curr_map.items() if name in message.text]
-        if len(found)>=2:
-            r = requests.get(f'https://api.exchangerate-api.com/v4/latest/{found[0]}',timeout=5).json()
-            result = float(amount) * r['rates'][found[1]]
-            bot.reply_to(message, f"💱 {amount} {found[0]} = {result:,.2f} {found[1]} 🌍")
-    except: bot.reply_to(message, "مثال: 100 دولار كم جنيه")
-
-@app.route('/')
-def home(): return "Siaf Global 30 Buttons ✅"
-
-def run_flask():
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
-
-if __name__ == "__main__":
-    threading.Thread(target=run_flask).start()
-    print("🦍 Siaf Global 30 Buttons اشتغل")
-    bot.infinity_polling()
+    bot.reply_to(message, f"🕌 صلاة {c}:\nالفجر-الظهر-العصر-المغرب-
