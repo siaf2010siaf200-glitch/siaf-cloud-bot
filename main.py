@@ -1,76 +1,74 @@
 import os
-import threading
-from flask import Flask
 import telebot
-from telebot import types
+import threading
+import random
+import string
+import requests
+from flask import Flask
 
-# 1. التوكن من Railway Variables
 TOKEN = os.environ.get('TELEGRAM_TOKEN')
-bot = telebot.TeleBot(TOKEN)
+if not TOKEN:
+    raise Exception("Bot token is not defined")
 
-# 2. سيرفر Flask عشان Railway ميقفلش
+bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
+
+# دالة توليد كود عشوائي
+def generate_code(length=8):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
+# دالة جلب سعر البتكوين
+def get_btc_price():
+    try:
+        r = requests.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+        price = r.json()['bitcoin']['usd']
+        return f"₿ سعر البتكوين: {price:,.0f}$ 💵"
+    except:
+        return "❌ مش عارف اجيب السعر دلوقتي"
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.reply_to(message, "🦍 اهلا يا CEO\nالبوت شغال تمام\nاكتب /help عشان تشوف الاوامر")
+
+@bot.message_handler(commands=['help'])
+def help_cmd(message):
+    text = """📋 الاوامر المتاحة:
+
+🔹 /start - تشغيل البوت
+🔹 /help - المساعدة
+🔹 /btc - سعر البتكوين
+🔹 /gen_code 30 - توليد كود لمدة 30 يوم
+
+اكتب الامر اللي عايزه 👇"""
+    bot.reply_to(message, text)
+
+@bot.message_handler(commands=['btc'])
+def btc_price(message):
+    bot.reply_to(message, get_btc_price())
+
+@bot.message_handler(commands=['gen_code'])
+def gen_code(message):
+    try:
+        days = message.text.split()[1]
+        code = generate_code()
+        bot.reply_to(message, f"✅ تم توليد كود:\n\n`{code}`\n\nصالح لمدة: {days} يوم")
+    except:
+        bot.reply_to(message, "❌ استخدم كده: /gen_code 30")
+
+@bot.message_handler(func=lambda message: 'بتكوين' in message.text.lower())
+def btc_text(message):
+    bot.reply_to(message, get_btc_price())
 
 @app.route('/')
 def home():
-    return "🦍 Siaf Bot شغال تمام"
+    return "Bot is running"
 
 def run_flask():
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
 
-# 3. اوامر البوت
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.reply_to(message, "🦍 اهلا يا CEO\nالبوت شغال تمام\nاكتب /help")
-
-@bot.message_handler(commands=['help'])
-def help_command(message):
-    text = """
-📋 الاوامر المتاحة:
-
- /start - تشغيل البوت
- /help - المساعدة
- /btc - سعر البتكوين
- /gen_code - توليد كود
-
-اكتب الامر اللي عايزه 👇
-"""
-    bot.reply_to(message, text)
-
-@bot.message_handler(commands=['btc'])
-def btc_price(message):
-    bot.reply_to(message, "₿ سعر البتكوين: 65,000$ 💵")
-
-@bot.message_handler(commands=['gen_code'])
-def gen_code(message):
-    try:
-        parts = message.text.split()
-        if len(parts) > 1:
-            days = parts[1]
-            bot.reply_to(message, f"✅ تم توليد كود لمدة {days} يوم")
-        else:
-            bot.reply_to(message, "استخدم: /gen_code 30")
-    except:
-        bot.reply_to(message, "فيه مشكلة جرب تاني")
-
-# 4. اي رسالة عادية
-@bot.message_handler(func=lambda message: True)
-def handle_all(message):
-    if message.text == "بتكوين" or message.text == "بتكوين ₿":
-        bot.reply_to(message, "₿ سعر البتكوين: 65,000$ 💵")
-    elif message.text == "دولار" or message.text == "دولار 💵":
-        bot.reply_to(message, "💵 سعر الدولار: 48 جنيه")
-    elif message.text == "شارت" or message.text == "شارت 📊":
-        bot.reply_to(message, "📊 شارت البتكوين:\nhttps://www.tradingview.com/symbols/BTCUSD/")
-    else:
-        bot.reply_to(message, "اكتب /help عشان تشوف الاوامر المتاحة")
-
-# 5. تشغيل الاتنين مع بعض
 if __name__ == "__main__":
-    print("🦍 بوت تليجرام بدأ شغل")
-    # شغل Flask في ثريد منفصل
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.start()
-    # شغل البوت
+    print("🦍 بوت تليجرام بدأ شغل")
     bot.infinity_polling()
